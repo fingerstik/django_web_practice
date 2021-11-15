@@ -1,0 +1,31 @@
+{% extends 'board/board_base.html' %}
+
+{% block title %}
+  edit
+{% endblock %}
+
+{% block content %}
+<form class="re-edit" method="POST" action="{% url 'board:edit_posting' posting.id %}">
+  <h3>Edit your Posting</h3>
+  <hr>
+  {% csrf_token %}
+
+  {% for field in form %}
+    <div class="form-group row">
+      <label for="colFormLabel" class="col-sm-2 col-form-label">{{ field.label_tag }}</label>
+
+      <div class="col-sm-10">
+        {{ field }}
+
+        {% if field.errors %}
+          {% for e in field.errors %}
+            <p style="color:palevioletred;">{{ e | escape }}</p>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+
+  <button value='action' name='ReviewForm' type='submit'>수정완료</button>
+</form>
+{% endblock %}

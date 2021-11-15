@@ -1,0 +1,41 @@
+#text_and_button {
+    width: 100px;
+    float: left;
+}
+
+#vote {
+    float: left;
+    width: 200px;
+    height: 295px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: right;
+}
+
+.div1 {
+    background-image: url("images/div1.jpg");
+}
+.div2 {
+    background-image: url("images/div2.jpg");
+}
+.div3 {
+    background-image: url("images/div3.jpg");
+}
+.div4 {
+    background-image: url("images/div4.jpg");
+}
+.div5 {
+    background-image: url("images/div5.jpg");
+}
+.div6 {
+    background-image: url("images/div6.jpg");
+}
+.div7 {
+    background-image: url("images/div7.jpg");
+}
+
+.vote_place {
+    width: 300px;
+    padding: 20px;
+    float: left;
+}

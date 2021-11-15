@@ -1,0 +1,125 @@
+{% extends 'board/board_base.html' %}
+
+{% block title %}
+  General Forum
+{% endblock %}
+
+{% block content %}
+<div class="outer-table">
+  <h1>게시판</h1>
+  <table class="forum-table">
+    <thead>
+    <tr class=text-center">
+      <th>번호</th>
+      <th>제목</th>
+      <th>작성일</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if posting_list %}
+    {% for list in posting_list %}
+      <tr class="text-center" >
+        <td>{{ list.pk }}</td>
+        <td><a href="{{ list.pk }}">{{ list.posting_title|truncatechars:30 }}</a></td>
+        {% if list.create_string == False %}
+        <td>{{ list.posting_date|date:'Y. m. d' }}</td>
+        {% else %}
+        <td>{{ list.created_string }}</td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+    {% else %}
+      {% if q %}
+      <tr class="text-center">
+        <td colspan="3">
+          일치하는 검색 결과가 없습니다.
+        </td>
+      </tr>
+      {% else %}
+      <tr class="text-center">
+        <td colspan="3">
+          작성된 게시글이 없습니다.
+        </td>
+      </tr>
+      {% endif %}
+    {% endif %}
+    </tbody>
+  </table>
+
+{# 로그인/로그아웃 버튼과 글쓰기 버튼 Format #}
+  <div class="col">
+    <div class="auth write" style="float: left;">
+      {% if user.is_authenticated %}
+      <button class="btn btn-sm" id="logout_btn" onclick="location.href='{% url 'common:logout' %}'">로그아웃</button>
+      {% else %}
+      <button class="btn btn-sm" id="login_btn" onclick="location.href='{% url 'common:login' %}'">로그인</button>
+      {% endif %}
+      <button class="btn btn-sm" id="write_btn" onclick="location.href='{% url 'board:new_posting' %}'">글쓰기</button>
+    </div>
+
+{#  search 창 Format  #}
+    <form action="" method="GET" style="float: right;">
+      <div class="col">
+        <div class="form-row">
+          <div class="form-row">
+            <div class="col" style="margin-top: 10px;">
+              <select style="width: 6em;" class="custom-select custom-select-md" name="type">
+                <option value="all">제목+내용</option>
+                <option value="title">제목</option>
+                <option value="body">내용</option>
+              </select>
+            </div>
+            <div class="col" style="margin-top: 10px;">
+              <input type="text" name="q" value="{{ q }}" class="form-control form-control-md"
+                     style="width: 15em;" placeholder="검색어를 입력해주세요.">
+            </div>
+            <div class="col">
+               <button class="btn btn-sm" type="submit" id="search_btn">검색</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block pagination %}
+<div class="col">
+  <div class="down-bar">
+  {% if is_paginated %}
+    <ul class="pagination justify-content-center pagination-sm">
+      {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?type={{ type }}&q={{ q }}&page={{ page_obj.previous_page_number }}"
+             tabindex="-1">이전</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link" href="#" tabindex="-1">이전</span>
+        </li>
+      {% endif %}
+
+      {% for page in paginator.page_range %}
+        <li class="page-item {% if page_obj.number == forloop.counter %}disabled{% endif %}">
+          <a class="page-link" href="?type={{ type }}&q={{ q }}&page={{ forloop.counter }}">{{ forloop.counter }}</a>
+        </li>
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link"href="?type={{ type }}&q={{ q }}&page={{ page_obj.next_page_number }}">다음</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link" href="#">다음</span>
+        </li>
+      {% endif %}
+    </ul>
+  {% else %}
+    {# activate with get form with disabled pagination #}
+    <ul class="page-item disabled"></ul>
+  {% endif %}
+  </div>
+</div>
+{% endblock %}

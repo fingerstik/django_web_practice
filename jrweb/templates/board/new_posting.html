@@ -1,0 +1,26 @@
+{% extends 'board/board_base.html' %}
+
+{% block title %}
+  글쓰기 페이지
+{% endblock %}
+
+{% block content %}
+<form action="{% url 'board:new_posting' %}" method="POST">
+  <h1>Write on New Posting</h1>
+  {% csrf_token %}
+  <div class="form-outline_mb-4">
+    <li>Posting title</li>
+    <input class="form-control" type="title" id="title-input" name="posting_title"
+           placeholder="Write your title on hear ex) no subject"/>
+    <label class="form-label" for="title_input"></label>
+  </div>
+
+  <div class="form-outline_mb-4">
+    <li>Posting body</li>
+    <textarea class="form-control" rows="10" cols="50" id="body-input" name="posting_body"
+              placeholder="Write your context on hear ex) Hello World!."></textarea>
+    <label class="form-label" for="body_input"></label>
+  </div>
+  <button type="submit" class="write-submit">작성</button>
+</form>
+{% endblock %}
