@@ -1,16 +1,9 @@
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
-from django.db.models import Q
-from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy, reverse
-from django.utils import timezone
-# from django.utils.decorators import method_decorator
 from django.views import generic
+
 from jrweb.board.models import Posting
-from jrweb.board.forms import PostingForm, LoginForm
 
 
-# Create your views here.
 class IndexView(generic.ListView):
     model = Posting
     paginate_by = 5
@@ -64,64 +57,3 @@ class IndexView(generic.ListView):
         context['type'] = search_type
 
         return context
-
-
-class CallPostingView(generic.DetailView):
-    model = Posting
-    template_name = 'board/call_posting.html'
-
-    def get_queryset(self):
-        return Posting.objects.filter(posting_date__lte=timezone.now())
-
-
-class PostingCreateView(generic.CreateView):
-    template_name = 'board/new_posting.html'
-    success_url = '/board/'
-    form_class = PostingForm
-
-    def post(self, request, *args, **kwargs):
-        self.object = None
-        return super().post(request, *args, **kwargs)
-
-
-class PostingEditView(generic.UpdateView):
-    model = Posting
-    context_object_name = 'posting'
-    template_name = 'board/edit_posting.html'
-    success_url = reverse_lazy('board:call_posting')
-    form_class = PostingForm
-
-    def get_object(self):
-        posting = get_object_or_404(Posting, pk=self.kwargs['pk'])
-
-        return posting
-
-    def get_success_url(self):
-        return reverse('board:call_posting', kwargs={'pk': self.object.pk})
-
-
-class PostingDeleteView(generic.DeleteView):
-    model = Posting
-    context_object_name = 'posting'
-    success_url = '/board/'
-
-    def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
-
-
-# @method_decorator(logout_message_required, name='dispatch')
-class LoginView(generic.FormView):
-    template_name = 'users/login.html'
-    form_class = LoginForm
-    suceess_url = '/board/'
-
-    def form_valid(self, form):
-        user_id = form.cleaned_data.get("user_id")
-        password = form.cleaned_data.get("password")
-        user = authenticate(self.request, username=user_id, password=password)
-
-        if user is not None:
-            self.request.session['user_id'] = user_id
-            login(self.request, user)
-
-        return super().form_valid(form)
