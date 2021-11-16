@@ -1,0 +1,20 @@
+{% extends 'board/board_base.html' %}
+
+{% block title %}
+  {{ posting.posting_body }}
+{% endblock title %}
+
+{% block content %}
+<div class="outer-box">
+  <h1>{{ post.title }}</h1>
+  <div class="context_body" style="border: 1px solid gray; padding: 10px;">{{ post.body }}</div>
+  <div class="text-right" style="display: flex; margin-top: 20px;">
+    <button class="btn btn-sm" id="detail_btn" onclick="location.href='{% url 'board:post_edit' pk=post.pk %}'">수정</button>
+    <form id="posting-ui" class="delete" style="padding-right: 20px; padding-left: 20px;" action="{% url 'board:post_delete' pk=post.pk %}" method="post">
+      {% csrf_token %}
+      <button class="btn btn-danger" onclick="location.href='{% url 'board:post_detail' pk=post.pk %}'">삭제</button>
+    </form>
+    <button class="btn btn-sm" id="detail_btn" onclick="location.href='/board/'">목록으로</button>
+  </div>
+</div>
+{% endblock %}

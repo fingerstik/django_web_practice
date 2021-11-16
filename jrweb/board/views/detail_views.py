@@ -1,12 +1,12 @@
 from django.utils import timezone
 from django.views import generic
 
-from jrweb.board.models import Posting
+from jrweb.board.models.post_models import Post
 
 
-class CallPostingView(generic.DetailView):
-    model = Posting
-    template_name = 'board/call_posting.html'
+class DetailView(generic.DetailView):
+    model = Post
+    template_name = 'board/post_detail.html'
 
     def get_queryset(self):
-        return Posting.objects.filter(posting_date__lte=timezone.now())
+        return Post.objects.filter(date__lte=timezone.now())

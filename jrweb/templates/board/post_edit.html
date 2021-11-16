@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-<form class="re-edit" method="POST" action="{% url 'board:edit_posting' posting.id %}">
+<form class="re-edit" method="POST" action="{% url 'board:post_edit' posting.id %}">
   <h3>Edit your Posting</h3>
   <hr>
   {% csrf_token %}

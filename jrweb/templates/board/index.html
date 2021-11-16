@@ -16,13 +16,13 @@
     </tr>
     </thead>
     <tbody>
-    {% if posting_list %}
-    {% for list in posting_list %}
+    {% if post_list %}
+    {% for list in post_list %}
       <tr class="text-center" >
         <td>{{ list.pk }}</td>
-        <td><a href="{{ list.pk }}">{{ list.posting_title|truncatechars:30 }}</a></td>
+        <td><a href="{{ list.pk }}">{{ list.title|truncatechars:30 }}</a></td>
         {% if list.create_string == False %}
-        <td>{{ list.posting_date|date:'Y. m. d' }}</td>
+        <td>{{ list.date|date:'Y. m. d' }}</td>
         {% else %}
         <td>{{ list.created_string }}</td>
         {% endif %}
@@ -54,7 +54,7 @@
       {% else %}
       <button class="btn btn-sm" id="login_btn" onclick="location.href='{% url 'common:login' %}'">로그인</button>
       {% endif %}
-      <button class="btn btn-sm" id="write_btn" onclick="location.href='{% url 'board:new_posting' %}'">글쓰기</button>
+      <button class="btn btn-sm" id="write_btn" onclick="location.href='{% url 'board:post_new' %}'">글쓰기</button>
     </div>
 
 {#  search 창 Format  #}
@@ -91,7 +91,7 @@
     <ul class="pagination justify-content-center pagination-sm">
       {% if page_obj.has_previous %}
         <li class="page-item">
-          <a class="page-link" href="?type={{ type }}&q={{ q }}&page={{ page_obj.previous_page_number }}"
+          <a class="page-link" href="?type={{ type }}&q={{ q }}&page={{ index_before_page }}"
              tabindex="-1">이전</a>
         </li>
       {% else %}
@@ -100,15 +100,15 @@
         </li>
       {% endif %}
 
-      {% for page in paginator.page_range %}
-        <li class="page-item {% if page_obj.number == forloop.counter %}disabled{% endif %}">
-          <a class="page-link" href="?type={{ type }}&q={{ q }}&page={{ forloop.counter }}">{{ forloop.counter }}</a>
+      {% for page in page_range %}
+        <li class="page-item {% if page == page_obj.number %}disabled{% endif %}">
+          <a class="page-link" href="?type={{ type }}&q={{ q }}&page={{ page }}">{{ page }}</a>
         </li>
       {% endfor %}
 
       {% if page_obj.has_next %}
         <li class="page-item">
-          <a class="page-link"href="?type={{ type }}&q={{ q }}&page={{ page_obj.next_page_number }}">다음</a>
+          <a class="page-link"href="?type={{ type }}&q={{ q }}&page={{ index_next_page }}">다음</a>
         </li>
       {% else %}
         <li class="page-item disabled">

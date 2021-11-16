@@ -1,22 +1,22 @@
 from django.contrib import admin
 
-from .models import Posting
+from jrweb.board.models.post_models import Post
 
 
 # Register your models here.
-class PostingAdmin(admin.ModelAdmin):
+class PostAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('posting context',  {'fields': ['posting_title']}),
-        (None,               {'fields': ['posting_body']}),
-        ('Date information', {'fields': ['posting_date'], 'classes': ['collapse']}),
+        ('posting context',  {'fields': ['title']}),
+        (None,               {'fields': ['body']}),
+        ('Date information', {'fields': ['date'], 'classes': ['collapse']}),
     ]
     list_display = (
-        'posting_title',
-        'posting_date'
+        'title',
+        'date'
     )
-    list_filter = ['posting_date']
-    search_fields = ['posting_title', 'posting_body']
-    readonly_fields = ['posting_date']
+    list_filter = ['date']
+    search_fields = ['title', 'body']
+    readonly_fields = ['date']
 
 
-admin.site.register(Posting, PostingAdmin)
+admin.site.register(Post, PostAdmin)

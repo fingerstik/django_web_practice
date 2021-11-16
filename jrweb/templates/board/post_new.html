@@ -5,19 +5,19 @@
 {% endblock %}
 
 {% block content %}
-<form action="{% url 'board:new_posting' %}" method="POST">
+<form action="{% url 'board:post_new' %}" method="POST">
   <h1>Write on New Posting</h1>
   {% csrf_token %}
-  <div class="form-outline_mb-4">
+  <div class="form-outline mb-4">
     <li>Posting title</li>
-    <input class="form-control" type="title" id="title-input" name="posting_title"
+    <input class="form-control" type="title" id="title-input" name="title"
            placeholder="Write your title on hear ex) no subject"/>
     <label class="form-label" for="title_input"></label>
   </div>
 
-  <div class="form-outline_mb-4">
+  <div class="form-outline mb-4">
     <li>Posting body</li>
-    <textarea class="form-control" rows="10" cols="50" id="body-input" name="posting_body"
+    <textarea class="form-control" rows="10" cols="50" id="body-input" name="body"
               placeholder="Write your context on hear ex) Hello World!."></textarea>
     <label class="form-label" for="body_input"></label>
   </div>
