@@ -1,0 +1,86 @@
+{% extends 'board/board_base.html' %}
+{% load board_extras %}
+
+{% block title %}
+  General Forum
+{% endblock %}
+
+{% block content %}
+  <div class="outer-table">
+    <h1>게시판</h1>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>작성일</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% if post_list %}
+        {% for list in post_list %}
+          <tr>
+            <td>{{ list.pk }}</td>
+            <td><a class="link-success" href="{{ list.pk }}" >{{ list.title|truncatechars:30 }}</a></td>
+            <td>{% created_string list %}</td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        {% if q %}
+          <tr>
+            <td colspan="3">
+              일치하는 검색 결과가 없습니다.
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="3">
+              작성된 게시글이 없습니다.
+            </td>
+          </tr>
+        {% endif %}
+      {% endif %}
+      </tbody>
+    </table>
+
+    {# 로그인/로그아웃 버튼과 글쓰기 버튼 Format #}
+    <div class="col">
+      <div class="auth write" style="float: left;">
+        {% if user.is_authenticated %}
+          <button class="btn btn-success btn-sm" id="logout_btn" onclick="location.href='{% url 'common:logout' %}'">로그아웃</button>
+        {% else %}
+          <button class="btn btn-success btn-sm" id="login_btn" onclick="location.href='{% url 'common:login' %}'">로그인</button>
+        {% endif %}
+        <button class="btn btn-success btn-sm" id="write_btn" onclick="location.href='{% url 'board:post_new' %}'">글쓰기</button>
+      </div>
+
+      {#  search 창 Format  #}
+      <form action="" method="GET" style="float: right;">
+        <div class="col">
+          <div class="form-row">
+            <div class="form-row" style="display: flex; align-items: center;">
+              <div class="col">
+                <select style="width: 6em;" class="custom-select custom-select-md" name="type">
+                  <option value="all">제목+내용</option>
+                  <option value="title">제목</option>
+                  <option value="body">내용</option>
+                </select>
+              </div>
+              <div class="col" style="margin: 0px 10px 0px 10px;">
+                <input type="text" name="q" value="{{ q }}" class="form-control form-control-md"
+                       style="width: 15em;" placeholder="검색어를 입력해주세요.">
+              </div>
+              <div class="col">
+                <button class="btn btn-info btn-sm" type="submit" id="search_btn">검색</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
+
+{% block pagination %}
+  {% include "board/paginator.html" %}
+{% endblock %}

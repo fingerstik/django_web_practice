@@ -6,7 +6,7 @@ from jrweb.board.models.post_models import Post
 class IndexView(generic.ListView):
     model = Post
     paginate_by = 5
-    template_name = 'board/index.html'
+    template_name = '../templates/board/index.html'
     context_object_name = 'post_list'
 
     # 검색하여 일치된 post 찾기

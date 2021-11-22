@@ -1,0 +1,37 @@
+<div class="paginator">
+  <div class="down-bar">
+    {% if is_paginated %}
+      <ul class="pagination justify-content-center pagination-sm">
+        {% if page_obj.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?type={{ type }}&q={{ q }}&page={{ index_before_page }}"
+               tabindex="-1">이전</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link" href="#" tabindex="-1">이전</span>
+          </li>
+        {% endif %}
+
+        {% for page in page_range %}
+          <li class="page-item {% if page == page_obj.number %}disabled{% endif %}">
+            <a class="page-link" href="?type={{ type }}&q={{ q }}&page={{ page }}">{{ page }}</a>
+          </li>
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?type={{ type }}&q={{ q }}&page={{ index_next_page }}">다음</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link" href="#">다음</span>
+          </li>
+        {% endif %}
+      </ul>
+    {% else %}
+      {# activate with get form with disabled pagination #}
+      <ul class="page-item disabled"></ul>
+    {% endif %}
+  </div>
+</div>

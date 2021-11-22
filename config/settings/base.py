@@ -170,7 +170,8 @@ TEMPLATES = [
         # https://docs.djangoproject.com/en/dev/ref/settings/#std:setting-TEMPLATES-BACKEND
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         # https://docs.djangoproject.com/en/dev/ref/settings/#template-dirs
-        "DIRS": [str(APPS_DIR / "templates")],
+        "DIRS": [str(APPS_DIR / "jrweb" / "board" / "templates"),
+                 str(APPS_DIR / "templates")],
         "OPTIONS": {
             # https://docs.djangoproject.com/en/dev/ref/settings/#template-loaders
             # https://docs.djangoproject.com/en/dev/ref/templates/api/#loader-types
@@ -245,8 +246,9 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s "
-                      "%(process)d %(thread)d %(message)s"
+            # "format": "%(levelname)s %(asctime)s %(module)s "
+            #           "%(process)d %(thread)d %(message)s"
+            "format": "%(message)s"
         }
     },
     "handlers": {
@@ -256,6 +258,12 @@ LOGGING = {
             "formatter": "verbose",
         }
     },
+    # "loggers": {
+    #     "django.db.backends": {
+    #         "handlers": ["console"],
+    #         "level": "DEBUG",
+    #     },
+    # },
     "root": {"level": "INFO", "handlers": ["console"]},
 }
 

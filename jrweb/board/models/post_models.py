@@ -3,22 +3,23 @@ from datetime import timedelta
 
 from django.contrib import messages
 from django.db import models
-from django.db.models import Q
+from django.db.models import Q, F
 from django.utils import timezone
 
 
 class PostQuerySet(models.QuerySet):
     def get_searched_queryset(self, search_keyword, search_type):
+        # print(self.model.title.field.get_prep_value)
         post_list = Post.objects.order_by('-pk')
         if search_keyword:
             if len(search_keyword) > 1:
                 if search_type == 'all':
-                    search_post_list = post_list.filter(Q(title__icontains=search_keyword) |
-                                                        Q(body__icontains=search_keyword))
+                    search_post_list = post_list.filter(Q(F(search_keyword in 'title')) |
+                                                        Q(F(search_keyword in 'body')))
                 elif search_type == 'title':
-                    search_post_list = post_list.filter(title__icontains=search_keyword)
+                    search_post_list = post_list.filter(F(search_keyword in 'title'))
                 elif search_type == 'body':
-                    search_post_list = post_list.filter(body__icontains=search_keyword)
+                    search_post_list = post_list.filter(F(search_keyword in 'body'))
                 return search_post_list
             else:
                 messages.error(self, '검색어는 2글자 이상 입력해주세요.')
@@ -59,15 +60,8 @@ class PostQuerySet(models.QuerySet):
     def write_log(self, contents_list):
         view_name, form_string = contents_list
         # get_title_and_body
-        form_string = list(map(str, str(form_string).replace("\n", "\"").replace("<", "\"").split("\"")))
-        if len(form_string) >= 40:
-            my_title, my_body = form_string[14], form_string[40]
-        else:
-            my_title, my_body = form_string[0], form_string[1]
-        if len(my_title) == 0:
-            my_title = '-'
-        if len(my_body) == 0:
-            my_body = '-'
+        my_title = contents_list[1]['title']
+        my_body = contents_list[1]['body']
         # logging
         logger = logging.getLogger()
         if len(logger.handlers) <= 1:
@@ -77,6 +71,28 @@ class PostQuerySet(models.QuerySet):
             file_handler.setFormatter(my_format)
             logger.addHandler(file_handler)
         logger.info("{} {} {}".format(view_name, my_title, my_body))
+
+    def create(self, contents_list):
+        model_data = contents_list[1]
+        self.obj_save(Post(), model_data['title'], model_data['body'])
+        self.write_log(contents_list)
+
+    def update(self, contents_list):
+        obj = Post.objects.get(pk=contents_list[2])
+        model_data = contents_list[1]
+        self.obj_save(obj, model_data['title'], model_data['body'])
+        self.write_log(contents_list[:-1])
+
+    def obj_delete(self, contents_list):
+        obj = Post.objects.get(pk=contents_list[1])
+        contents_list[1] = {'title': obj.title, 'body': obj.body}
+        self.write_log(contents_list)
+        obj.delete()
+
+    def obj_save(self, obj, title, body):
+        obj.title = title
+        obj.body = body
+        obj.save()
 
 
 class PostManager(models.Manager):
@@ -89,6 +105,15 @@ class PostManager(models.Manager):
     def get_context_data(self, contents_list):
         return self.get_queryset().get_context_data(contents_list)
 
+    def create(self, contents_list):
+        return self.get_queryset().create(contents_list)
+
+    def update(self, contents_list):
+        return self.get_queryset().update(contents_list)
+
+    def obj_delete(self, contents_list):
+        return self.get_queryset().obj_delete(contents_list)
+
     def write_log(self, contents_list):
         return self.get_queryset().write_log(contents_list)
 
@@ -100,18 +125,5 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
-
-    def created_string(self):
-        time = timezone.now() - self.date
-        if time < timedelta(minutes=1):
-            return '방금 전'
-        elif time < timedelta(hours=1):
-            return str(int(time.seconds / 60)) + '분 전'
-        elif time < timedelta(days=1):
-            return str(int(time.seconds / 3600)) + '시간 전'
-        elif time < timedelta(days=7):
-            return str(int(time.days)) + '일 전'
-        else:
-            return False
 
     objects = PostManager()
