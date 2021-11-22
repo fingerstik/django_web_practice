@@ -1,13 +1,14 @@
 from django import forms
 from django.contrib.auth.hashers import check_password
 
-from .models import Posting
+from jrweb.board.models.post_models import Post
 
 
 class PostingForm(forms.ModelForm):
+
     class Meta:
-        model = Posting
-        fields = ['posting_title', 'posting_body']
+        model = Post
+        fields = ['title', 'body']
 
 
 class LoginForm(forms.Form):
@@ -32,10 +33,10 @@ class LoginForm(forms.Form):
 
         if user_id and password:
             try:
-                user = Posting.objects.get(user_id=user_id)
-            except Posting.DoesNotExist:
+                user = Post.objects.get(user_id=user_id)
+            except Post.DoesNotExist:
                 self.add_error('user_id', '아이디가 존재하지 않습니다.')
                 return
 
-            if not check_password(password, Posting.password):
+            if not check_password(password, Post.password):
                 self.add_error('password', '비밀번호가 틀렸습니다.')
